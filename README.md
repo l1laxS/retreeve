@@ -21,6 +21,7 @@ That means you can adapt it to your own text structures — scientific logs, sim
 
 ```python
 from retreeve import Parser, BaseHandler, NO_MATCH_REGEX
+from io import StringIO
 import re
 
 
@@ -31,32 +32,34 @@ class SectionHandler(BaseHandler):
 
 class TitleHandler(BaseHandler):
     first_line_re = re.compile(r"^TITLE: ")
-    feed_line_re = NO_MATCH_REGEX # only one line allowed
-    subhandlers = SectionHandler
+    feed_line_re = NO_MATCH_REGEX  # only one line allowed
+    subhandlers = [SectionHandler]
+
+
+txt = """TITLE: Lorem Ipsum
+Section - Lorem ipsum dolor sit amet, consetetur 
+sadipscing elitr, sed diam nonumy eirmod tempor invidunt 
+ut labore et dolore magna aliquyam erat, sed diam 
+voluptua. At vero eos et accusam et justo duo dolores et 
+ea rebum."""
 
 parser = Parser([TitleHandler])
-with open("myfile.txt") as f:
-    parser.parse(f)
+with StringIO(txt) as stream:
+    parser.parse(stream)
 
 print(parser.get_dict())
 ```
-```python
-{
-    "items": [
-        TitleHandler(
-            items=[
-                "TITLE: Lorem ipsum",
-                SectionHandler(
-                    items=[
-                        "Section - Lorem ipsum dolor sit amet, consetetur ",
-                        "sadipscing elitr, sed diam nonumy eirmod tempor invidunt ",
-                        "ut labore et dolore magna aliquyam erat, sed diam ",
-                        "voluptua. At vero eos et accusam et justo duo dolores et ",
-                        "ea rebum."
-                    ]
-                )
-            ]
-        )
-    ]
-}
+
+results in:
+```json
+[{ "TitleHandler": [
+  "TITLE: Lorem Ipsum".
+  { "SectionHandler": [
+    "Section - Lorem ipsum dolor sit amet, consetetur ".
+    "sadipscing elitr, sed diam nonumy eirmod tempor invidunt ".
+    "ut labore et dolore magna aliquyam erat, sed diam ".
+    "voluptua. At vero eos et accusam et justo duo dolores et ".
+    "ea rebum."]
+  }]
+}]
 ```
