@@ -12,6 +12,10 @@ With ReTreeVe, you can retrieve structure from chaos — turning any ASCII or lo
 -	📜 Generic ASCII support — works with any text source: logs, configs, reports, etc.
 -	🪶 Lightweight & extensible — no heavy dependencies, simple API.
 
+## 🔓 Open by Design
+
+Unlike many parsers tailored for specific proprietary formats, **ReTreeVe** is intentionally **format-agnostic** and released under the **MIT license**.  
+That means you can adapt it to your own text structures — scientific logs, simulation outputs, configuration files — and integrate it freely in both open and closed projects.
 
 ## 💡 Example
 
