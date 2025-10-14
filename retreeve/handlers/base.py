@@ -51,5 +51,5 @@ class BaseHandler:
                 item = item.rstrip("\n")
                 lines.append(f"'{item}'")
 
-        inner = '.\n'.join(f"{inner_indent}{line}" for line in lines)
+        inner = ',\n'.join(f"{inner_indent}{line}" for line in lines)
         return f"{{ {self.__class__.__name__}: [\n{inner}]\n{indent}}}"
