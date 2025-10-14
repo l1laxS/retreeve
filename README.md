@@ -1,4 +1,4 @@
-# 🪶 ReTreeVe — Regex Tree Versatile Extractor
+# ReTreeVe — Regex Tree Versatile Extractor
 
 **ReTreeVe** (from *“retrieve”*) is a lightweight Python library for extracting structured data from plain text files, using user-defined regular expressions.  
 It acts as a **Regex Tree Versatile Extractor**, building a nested tree representation of your text, based on pattern matches and logical block relationships.
