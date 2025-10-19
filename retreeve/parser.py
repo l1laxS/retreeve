@@ -37,6 +37,7 @@ class Parser:
         """
         Handle a single line by matching handlers, feeding, or falling back.
 
+<<<<<<< HEAD
         1. Try matching a handler in the same or higher level (breadth-first).
         2. Try matching a handler among current node's children.
         3. Try feeding the line to the current parsed object.
@@ -48,6 +49,13 @@ class Parser:
             if handler.matches(line):
                 logger.debug("Matched handler (breadth-first):" +
                              f"{handler} at depth {depth}")
+||||||| parent of 1630cb6 (update parser)
+            # look for new handler in children
+            for child in self.handlers_tree.current_children():
+=======
+            # look for new handler in children
+            for handler in self.handlers_tree.current_children():
+>>>>>>> 1630cb6 (update parser)
                 handled = handler(line)
                 self.handlers_tree.set_current(handler)
                 self.parsed_obj.move_up_to(depth - 1)
