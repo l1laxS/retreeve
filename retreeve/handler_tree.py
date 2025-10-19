@@ -11,7 +11,7 @@ class Node(ABC):
         pass
 
 
-class Tree:
+class HandlerTree:
     def __init__(self, root: Node | list[Node]):
         if isinstance(root, Node):
             self.roots = [root]
@@ -24,6 +24,24 @@ class Tree:
 
     def set_current(self, node):
         self._current = node
+
+    def move_current_up(self) -> bool:
+        """
+        Move the current pointer to its parent.
+
+        Returns:
+            True if the move succeeded (i.e., there was a parent),
+            False if already at the root (no parent).
+        """
+        if self._current is None:
+            return False
+
+        parent = self._current.parent
+        if parent is None:
+            return False
+
+        self._current = parent
+        return True
 
     def breadth_first(self):
         """
