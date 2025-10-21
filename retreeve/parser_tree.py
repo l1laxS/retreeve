@@ -18,26 +18,49 @@ class ParseTree:
     node, which is the active context for parsing new lines.
     """
 
-    def __init__(self, root_objects: list):
-        self._root_nodes = [TreeNode(obj) for obj in root_objects]
-        self._current = self._root_nodes[-1] if self._root_nodes else None
+    def __init__(self):
+        self._root_nodes = []
+        self._current = None
 
     def get_current(self):
         """Return the current parsed object."""
         return self._current.value if self._current else None
 
-    def move_current_up(self) -> bool:
+    def move_up_to(self, depth: int):
         """
-        Move the current pointer to its parent.
+        Move the current node up to the specified depth.
 
-        Returns:
-            True if moved to parent successfully,
-            False if already at root.
+        Depth 0 refers to the root level, depth 1 to the root's child, etc.
+        If depth is -1, the current node is unset (set to None).
+
+        Raises:
+            ValueError: If the given depth is deeper than the current node.
         """
-        if self._current is None or self._current.parent is None:
-            return False
+        if depth == -1:
+            self._current = None
+            return
+
+        # Build path from current to root (in reverse)
+        path = []
+        node = self._current
+        while node:
+            path.append(node)
+            node = node.parent
+
+        current_depth = len(path) - 1
+
+        if depth > current_depth:
+            raise ValueError(f"Target depth {depth} is deeper than\
+                    current depth {current_depth}")
+
+        self._current = path[current_depth - depth]
+
+    def move_up(self):
+        if not self._current:
+            raise ValueError("Cannot move up, if current is unassigned")
+
         self._current = self._current.parent
-        return True
+        # the case parent == None does not require special handling
 
     def add_child(self, obj):
         """
@@ -52,22 +75,6 @@ class ParseTree:
             self._root_nodes.append(new_node)
         else:
             self._current.add_child(new_node)
-
-        self._current = new_node
-
-    def add_sibling(self, obj):
-        """
-        Add a new parsed object as a sibling of the current node.
-
-        The new node becomes the current node.
-        """
-        new_node = TreeNode(obj)
-
-        if self._current is None or self._current.parent is None:
-            # Current is at root level
-            self._root_nodes.append(new_node)
-        else:
-            self._current.parent.add_child(new_node)
 
         self._current = new_node
 

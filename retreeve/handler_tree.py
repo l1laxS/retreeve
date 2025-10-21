@@ -52,7 +52,7 @@ class HandlerTree:
         children of those nodes are not visited.
         """
         level_reached = False
-        current_level = deque(self.roots)
+        current_level = deque((node, 0) for node in self.roots)
         next_level_nodes = []
 
         while current_level or next_level_nodes:
@@ -60,15 +60,16 @@ class HandlerTree:
                 current_level = deque(next_level_nodes)
                 next_level_nodes = []
 
-            node = current_level.popleft()
-            yield node
+            node, depth = current_level.popleft()
+            yield node, depth
 
             if self._current == node:
                 level_reached = True
                 next_level_nodes.clear()
 
             if not level_reached:
-                next_level_nodes.extend(node.children)
+                for child in node.children:
+                    next_level_nodes.append((child, depth + 1))
 
     def current_children(self):
         for child in self._current.children:
