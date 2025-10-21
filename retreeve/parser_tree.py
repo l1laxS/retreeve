@@ -1,14 +1,3 @@
-class TreeNode:
-    def __init__(self, value):
-        self.value = value
-        self.parent = None
-        self.children = []
-
-    def add_child(self, child: "TreeNode"):
-        child.parent = self
-        self.children.append(child)
-
-
 class ParseTree:
     """
     A tree of parsed objects, representing the output of a hierarchical parser.
@@ -25,6 +14,9 @@ class ParseTree:
     def get_current(self):
         """Return the current parsed object."""
         return self._current.value if self._current else None
+
+    def set_current(self, obj):
+        self._current = obj
 
     def current_and_ancestors(self):
         node = self._current
@@ -74,28 +66,14 @@ class ParseTree:
 
         The new node becomes the current node.
         """
-        new_node = TreeNode(obj)
 
         if self._current is None:
             # No current node: treat as top-level root
-            self._root_nodes.append(new_node)
+            self._root_nodes.append(obj)
         else:
-            self._current.add_child(new_node)
+            self._current.add_child(obj)
 
-        self._current = new_node
-
-    def insert_beside_current(self, obj):
-        """
-        Add a fallback parsed object beside the current node.
-
-        Unlike add_sibling(), this does not change the current node.
-        """
-        new_node = TreeNode(obj)
-
-        if self._current is None or self._current.parent is None:
-            self._root_nodes.append(new_node)
-        else:
-            self._current.parent.add_child(new_node)
+        self._current = obj
 
     def __iter__(self):
         """Iterate over all parsed objects in the tree (pre-order)."""
@@ -112,8 +90,8 @@ class ParseTree:
 
         def walk(node, depth):
             prefix = "  " * depth
-            print(f"{prefix}- {type(node.value).__name__}")
-            for child in node.children:
+            print(f"{prefix}- {type(node).__name__}")
+            for child in node.get_children():
                 walk(child, depth + 1)
 
         for root in self._root_nodes:

@@ -48,7 +48,8 @@ class Parser:
                 return
 
         for old_handler in self.parsed_obj.current_and_ancestors():
-            if old_handler.feed(line):
+            if old_handler.feed_matches(line):
+                old_handler.feed(line)
                 self.handlers_tree.set_current(old_handler)
                 self.parsed_obj.set_current(old_handler)
                 return

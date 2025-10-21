@@ -16,11 +16,29 @@ class BaseHandler(Node):
 
     def __init__(self, line):
         self.lines = [line]
+        self.parent = None
+        self.children = []
 
     @classmethod
     def matches(cls, line: str) -> bool:
         """Return True if this handler can start on the given line."""
         return cls.first_line_re and cls.first_line_re.match(line)
+
+    @classmethod
+    def get_children(cls) -> Iterable[Type[Node]]:
+        return cls.subhandlers
+
+    def feed_matches(self, line: str) -> bool:
+        """Return True if this handler can start on the given line."""
+        return self.__class__.feed_line_re and \
+                self.__class__.feed_line_re.match(line)
+
+    def feed(self, line):
+        self.lines.append(line)
+
+    def add_child(self, child):
+        child.parent = self
+        self.children.append(child)
 
     def parse(self, stream: TextIO):
         while line := stream.readline():
@@ -37,10 +55,6 @@ class BaseHandler(Node):
                         line = None
                     else:
                         return line  # give back control to the upper class
-
-    @classmethod
-    def get_children(cls) -> Iterable[Type[Node]]:
-        return cls.subhandlers
 
     def __repr__(self, level=0):
         indent = '  ' * level

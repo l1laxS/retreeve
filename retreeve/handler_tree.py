@@ -10,6 +10,10 @@ class Node(ABC):
         """Return an iterable of child nodes"""
         pass
 
+    @abstractmethod
+    def add_child(self, child: "Node"):
+        pass
+
 
 class HandlerTree:
     def __init__(self, root: Type[Node] | list[Type[Node]]):
