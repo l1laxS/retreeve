@@ -26,6 +26,12 @@ class ParseTree:
         """Return the current parsed object."""
         return self._current.value if self._current else None
 
+    def current_and_ancestors(self):
+        node = self._current
+        while node:
+            yield node
+            node = node.parent
+
     def move_up_to(self, depth: int):
         """
         Move the current node up to the specified depth.

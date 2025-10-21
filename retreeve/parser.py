@@ -33,16 +33,16 @@ class Parser:
         5. If all else fails, wrap the line with fallback and continue.
         """
         for handler, depth in self.handlers_tree.breadth_first():
-            handled = handler(line)
-            if handled:
+            if handler.matches(line):
+                handled = handler(line)
                 self.handlers_tree.set_current(handler)
                 self.parsed_obj.move_up_to(depth - 1)
                 self.parsed_obj.add_child(handled)
                 return
 
         for handler in self.handlers_tree.current_children():
-            handled = handler(line)
-            if handled:
+            if handler.matches(line):
+                handled = handler(line)
                 self.handlers_tree.set_current(handler)
                 self.parsed_obj.add_child(handled)
                 return

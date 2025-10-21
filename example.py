@@ -25,4 +25,4 @@ parser = Parser([TitleHandler])
 with StringIO(txt) as stream:
     parser.parse(stream)
 
-print(parser.get_dict())
+parser.parsed_obj.debug_print()

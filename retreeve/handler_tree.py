@@ -70,9 +70,9 @@ class HandlerTree:
                 next_level_nodes.clear()
 
             if not level_reached:
-                for child in node.children:
+                for child in node.get_children():
                     next_level_nodes.append((child, depth + 1))
 
     def current_children(self):
-        for child in self._current.children:
+        for child in self._current.get_children():
             yield child

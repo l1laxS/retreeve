@@ -38,8 +38,9 @@ class BaseHandler(Node):
                     else:
                         return line  # give back control to the upper class
 
-    def get_children(self) -> Iterable[Type[Node]]:
-        return self.subhandlers
+    @classmethod
+    def get_children(cls) -> Iterable[Type[Node]]:
+        return cls.subhandlers
 
     def __repr__(self, level=0):
         indent = '  ' * level
