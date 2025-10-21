@@ -1,16 +1,17 @@
 import re
-from typing import TextIO, Type
+from typing import TextIO, Type, Iterable
+from ..handler_tree import Node
 
 
-class BaseHandler:
+class BaseHandler(Node):
     """Abstract base class for stream-based, regex-driven multi-line handlers.
     Subclasses should define:
     - first_line_re: regex for first line
     - feed_line_re: regex for following lines or None
     - subhandlers: list of handler classes (optional)
     """
-    first_line_re: re.Pattern = None
-    feed_line_re: re.Pattern = None
+    first_line_re: re.Pattern | None = None
+    feed_line_re: re.Pattern | None = None
     subhandlers: list[Type["BaseHandler"]] = []
 
     def __init__(self, line):
@@ -36,6 +37,9 @@ class BaseHandler:
                         line = None
                     else:
                         return line  # give back control to the upper class
+
+    def get_children(self) -> Iterable[Type[Node]]:
+        return self.subhandlers
 
     def __repr__(self, level=0):
         indent = '  ' * level

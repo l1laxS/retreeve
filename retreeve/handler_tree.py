@@ -1,24 +1,26 @@
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import Iterable, Type
 from collections import deque
 
 
 # --- Abstract Node Interface ---
 class Node(ABC):
     @abstractmethod
-    def get_children(self) -> Iterable['Node']:
+    def get_children(self) -> Iterable[Type['Node']]:
         """Return an iterable of child nodes"""
         pass
 
 
 class HandlerTree:
-    def __init__(self, root: Node | list[Node]):
-        if isinstance(root, Node):
+    def __init__(self, root: Type[Node] | list[Type[Node]]):
+        if isinstance(root, type) and issubclass(root, Node):
             self.roots = [root]
-        elif isinstance(root, list) and all(isinstance(n, Node) for n in root):
+        elif isinstance(root, list) and \
+            all(isinstance(cls, type) and issubclass(cls, Node)
+                for cls in root):
             self.roots = root
         else:
-            raise TypeError("root must be a Node or a list of Node objects")
+            raise TypeError("root must be a Node type or a list of Node types")
         self._current = None
         self._fallback = None
 
