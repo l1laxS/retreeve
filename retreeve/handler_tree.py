@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from abc import ABC, abstractmethod
 from typing import Iterable, Type
 from collections import deque
