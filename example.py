@@ -15,14 +15,22 @@ class TitleHandler(BaseHandler):
 
 
 txt = """TITLE: Lorem Ipsum
-Section - Lorem ipsum dolor sit amet, consetetur 
-sadipscing elitr, sed diam nonumy eirmod tempor invidunt 
-ut labore et dolore magna aliquyam erat, sed diam 
-voluptua. At vero eos et accusam et justo duo dolores et 
-ea rebum."""
+Section - Lorem ipsum dolor sit amet, consetetur
+sadipscing elitr, sed diam nonumy eirmod tempor invidunt
+ut labore et dolore magna aliquyam erat, sed diam
+voluptua. At vero eos et accusam et justo duo dolores et
+ea rebum.
+Section - Lorem ipsum dolor sit amet, consetetur
+sadipscing elitr, sed diam nonumy eirmod tempor invidunt
+ut labore et dolore magna aliquyam erat, sed diam
+voluptua. At vero eos et accusam et justo duo dolores et
+ea rebum.
+TITLE: some other title
+what is this line then?"""
 
 parser = Parser([TitleHandler])
 with StringIO(txt) as stream:
     parser.parse(stream)
 
-parser.parsed_obj.debug_print()
+# parser.parsed_obj.debug_print()
+print(parser.parsed_obj._root_nodes)
