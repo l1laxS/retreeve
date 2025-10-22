@@ -1,3 +1,6 @@
+from typing import Iterable
+
+
 class ParseTree:
     """
     A tree of parsed objects, representing the output of a hierarchical parser.
@@ -10,10 +13,6 @@ class ParseTree:
     def __init__(self):
         self._root_nodes = []
         self._current = None
-
-    def get_current(self):
-        """Return the current parsed object."""
-        return self._current.value if self._current else None
 
     def set_current(self, obj):
         self._current = obj
@@ -79,8 +78,8 @@ class ParseTree:
         """Iterate over all parsed objects in the tree (pre-order)."""
         def walk(node):
             yield node.value
-            for child in node.children:
-                yield from walk(child)
+            for item in node:
+                yield from walk(item)
 
         for root in self._root_nodes:
             yield from walk(root)
@@ -91,9 +90,11 @@ class ParseTree:
         def walk(node, depth):
             prefix = "  " * depth
             print(f"{prefix}- {type(node).__name__}")
-            for child in node.get_children():
-                walk(child, depth + 1)
+            print(node)
+            print()
+            if isinstance(node, Iterable):
+                for item in node:
+                    walk(item, depth + 1)
 
         for root in self._root_nodes:
             walk(root, 0)
-
