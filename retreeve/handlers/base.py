@@ -1,55 +1,71 @@
 import re
-from typing import TextIO, Type
+from typing import Type, Iterable
+from ..handler_tree import Node
 
 
-class BaseHandler:
+class String:
+    def __init__(self, text):
+        self.text = text.rstrip("\n")
+
+    def __str__(self):
+        return self.text
+
+    def __repr__(self):
+        return f"String({self.text!r})"
+
+
+class BaseHandler(Node):
     """Abstract base class for stream-based, regex-driven multi-line handlers.
     Subclasses should define:
     - first_line_re: regex for first line
     - feed_line_re: regex for following lines or None
     - subhandlers: list of handler classes (optional)
     """
-    first_line_re: re.Pattern = None
-    feed_line_re: re.Pattern = None
+    first_line_re: re.Pattern | None = None
+    feed_line_re: re.Pattern | None = None
     subhandlers: list[Type["BaseHandler"]] = []
 
     def __init__(self, line):
-        self.lines = [line]
+        self.parent = None
+        self._contents = [String(line)]
 
     @classmethod
     def matches(cls, line: str) -> bool:
         """Return True if this handler can start on the given line."""
-        return cls.first_line_re and cls.first_line_re.match(line)
+        return bool(cls.first_line_re and cls.first_line_re.match(line))
 
-    def parse(self, stream: TextIO):
-        while line := stream.readline():
-            while line:
-                for sub in self.__class__.subhandlers:
-                    if sub.matches(line):
-                        child = sub(line)
-                        line = child.parse(stream)
-                        self.lines.append(child)
-                        break
-                else:
-                    if self.__class__.feed_line_re.match(line):
-                        self.lines.append(line)
-                        line = None
-                    else:
-                        return line  # give back control to the upper class
+    @classmethod
+    def get_children(cls) -> Iterable[Type[Node]]:
+        return cls.subhandlers
+
+    def feed_matches(self, line: str) -> bool:
+        """Return True if this handler can start on the given line."""
+        return bool(self.__class__.feed_line_re and
+                    self.__class__.feed_line_re.match(line))
+
+    def feed(self, line):
+        self._contents.append(String(line))
+
+    def add_child(self, child):
+        child.parent = self
+        self._contents.append(child)
 
     def __repr__(self, level=0):
         indent = '  ' * level
         inner_indent = '  ' * (level + 1)
 
         lines = []
-        for item in self.lines:
+        for item in self._contents:
             if isinstance(item, BaseHandler):
                 # Recursively call _ repr _ with increased indent level
                 lines.append(item.__repr__(level+1))
             else:
                 # Assume it's a string, format it with quotes
-                item = item.rstrip("\n")
-                lines.append(f"'{item}'")
+                lines.append(item)
 
         inner = ',\n'.join(f"{inner_indent}{line}" for line in lines)
         return f"{{ {self.__class__.__name__}: [\n{inner}]\n{indent}}}"
+
+    def __iter__(self):
+        for item in self._contents:
+            yield item
