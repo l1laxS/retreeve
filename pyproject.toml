@@ -1,0 +1,10 @@
+[project]
+name = "retreeve"
+version = "0.1"
+[tool.setuptools]
+packages = ["retreeve"]
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
