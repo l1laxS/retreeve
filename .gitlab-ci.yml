@@ -9,5 +9,5 @@ unit-test-job:       # This job runs in the build stage, which runs first.
     - pip install .
     - pip install pytest
   script:
-    - pytest
+    - python -m pytest
   
