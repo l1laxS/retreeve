@@ -70,7 +70,7 @@ class Parser:
                 logger.debug("Feeding line to existing handler: " +
                              f"{old_handler}")
                 old_handler.feed(line)
-                self.handlers_tree.set_current(old_handler)
+                self.handlers_tree.set_current(type(old_handler))
                 self.parsed_obj.set_current(old_handler)
                 logger.debug("Line fed to existing handler.")
                 return

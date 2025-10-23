@@ -28,7 +28,7 @@ class HandlerTree:
         self._current = None
         self._fallback = None
 
-    def set_current(self, node):
+    def set_current(self, node: Type[Node]):
         self._current = node
 
     def move_current_up(self) -> bool:
