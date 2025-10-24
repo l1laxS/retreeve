@@ -54,7 +54,7 @@ class ParseTree:
 
     def move_up(self):
         if not self._current:
-            raise ValueError("Cannot move up, if current is unassigned")
+            return
 
         self._current = self._current.parent
         # the case parent == None does not require special handling
