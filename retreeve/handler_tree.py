@@ -24,6 +24,13 @@ class HandlerTree:
                 for cls in root):
             self.roots = root
         else:
+            for c in root:
+                print(
+                    c, "=>", issubclass(c, Node),
+                    "Node is", Node, "cls base Node is", c.__mro__[-2] if len(c.__mro__) > 1 else None
+                )
+                print("Node id:", id(Node), "cls base Node id:", id(c.__mro__[-2]))
+
             raise TypeError("root must be a Node type or a list of Node types")
         self._current = None
         self._fallback = None
@@ -58,6 +65,8 @@ class HandlerTree:
         children of those nodes are not visited.
         """
         level_reached = False
+        if self._current is None:
+            level_reached = True
         current_level = deque((node, 0) for node in self.roots)
         next_level_nodes = []
 
@@ -78,5 +87,7 @@ class HandlerTree:
                     next_level_nodes.append((child, depth + 1))
 
     def current_children(self):
+        if not self._current:
+            return
         for child in self._current.get_children():
             yield child
