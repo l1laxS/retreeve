@@ -14,12 +14,12 @@ class ExecControlHandler(BaseHandler):
 
 
 class CommentHandler(BaseHandler):
-    first_line_re = re.compile(r"^$")
-    feed_line_re = re.compile(r"^$")
+    first_line_re = re.compile(r"^\$")
+    feed_line_re = re.compile(r"^\$")
 
 
 class CardHandler(BaseHandler):
-    first_line_re = re.compile(r"^\w")
+    first_line_re = re.compile(r"^(?!ENDDATA)\w")
     feed_line_re = re.compile(r"^\+")
 
 
