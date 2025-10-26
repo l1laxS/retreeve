@@ -1,5 +1,6 @@
 import re
 from typing import Type, Iterable
+import json
 from ..handler_tree import Node
 
 
@@ -50,21 +51,18 @@ class BaseHandler(Node):
         child.parent = self
         self._contents.append(child)
 
-    def __repr__(self, level=0):
-        indent = '  ' * level
-        inner_indent = '  ' * (level + 1)
+    def to_dict(self):
+        # Recursively convert BaseHandler -> dict
+        if isinstance(self._contents, list):
+            contents = [c.to_dict() if isinstance(c, BaseHandler)
+                        else repr(c) for c in self._contents]
+        else:
+            contents = self._contents
+        return {f"{self.__class__.__name__}": contents}
 
-        lines = []
-        for item in self._contents:
-            if isinstance(item, BaseHandler):
-                # Recursively call _ repr _ with increased indent level
-                lines.append(item.__repr__(level+1))
-            else:
-                # Assume it's a string, format it with quotes
-                lines.append(item)
-
-        inner = ',\n'.join(f"{inner_indent}{line}" for line in lines)
-        return f"{{ {self.__class__.__name__}: [\n{inner}]\n{indent}}}"
+    def __repr__(self):
+        # Use JSON for pretty indentation
+        return json.dumps(self.to_dict(), indent=2)
 
     def __iter__(self):
         for item in self._contents:

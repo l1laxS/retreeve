@@ -47,7 +47,7 @@ class Parser:
         for handler, depth in self.handlers_tree.breadth_first():
             if handler.matches(line):
                 logger.debug("Matched handler (breadth-first):" +
-                             f"{handler} at depth {depth}")
+                             f"{handler.__name__} at depth {depth}")
                 handled = handler(line)
                 self.handlers_tree.set_current(handler)
                 self.parsed_obj.move_up_to(depth - 1)
@@ -57,7 +57,7 @@ class Parser:
 
         for handler in self.handlers_tree.current_children():
             if handler.matches(line):
-                logger.debug(f"Matched child handler: {handler}")
+                logger.debug(f"Matched child handler: {handler.__name__}")
                 handled = handler(line)
                 self.handlers_tree.set_current(handler)
                 self.parsed_obj.add_child(handled)
@@ -68,7 +68,7 @@ class Parser:
         for old_handler in self.parsed_obj.current_and_ancestors():
             if old_handler.feed_matches(line):
                 logger.debug("Feeding line to existing handler: " +
-                             f"{old_handler}")
+                             f"{old_handler.__class__.__name__}")
                 old_handler.feed(line)
                 self.handlers_tree.set_current(type(old_handler))
                 self.parsed_obj.set_current(old_handler)

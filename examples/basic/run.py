@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+repo_root = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(repo_root))
+
 from retreeve import Parser, BaseHandler, NO_MATCH_REGEX
 from io import StringIO
 import re
@@ -20,3 +26,8 @@ def run_example():
     with StringIO(txt) as stream:
         parser.parse(stream)
     return parser.parsed_obj._root_nodes
+
+
+if __name__ == '__main__':
+    result = run_example()
+    print(result)
