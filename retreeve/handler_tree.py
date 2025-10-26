@@ -65,6 +65,8 @@ class HandlerTree:
         children of those nodes are not visited.
         """
         level_reached = False
+        if self._current is None:
+            level_reached = True
         current_level = deque((node, 0) for node in self.roots)
         next_level_nodes = []
 
